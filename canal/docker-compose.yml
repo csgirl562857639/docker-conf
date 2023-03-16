@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  canal:
+    image: canal/canal-server:${CANAL_VERSION}
+    container_name: canal
+    privileged: true
+    depends_on:
+      canal-admin:
+        condition: service_started
+    environment:
+      - canal.admin.manager=canal-admin:8089
+      - canal.admin.port=11110
+      - canal.admin.user=admin
+      - canal.admin.passwd=4ACFE3202A5FF5CF467898FC58AAB1D615029441
+    volumes:
+      - ./data/canal/logs:/home/admin/canal-server/logs
+    ports:
+      - "2222:2222"
+      - "8000:8000"
+      - "11111:11111"
+      - "11112:11112"
+
+  canal-admin:
+    image: canal/canal-admin:${CANAL_VERSION}
+    container_name: canal-admin
+    privileged: true
+    environment:
+      - canal.adminUser=admin
+      - canal.adminPasswd=admin
+      - spring.datasource.address=10.70.103.241:3306
+      - spring.datasource.database=canal_manager
+      - spring.datasource.username=${DB_USERNAME}
+      - spring.datasource.password=${DB_PASSWORD}
+    volumes:
+      - ./data/canal-admin/logs:/home/admin/canal-admin/logs
+    ports:
+      - "8089:8089"
