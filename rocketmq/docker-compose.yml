@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  namesrv:
+    image: apache/rocketmq:${VERSION}
+    container_name: rmqnamesrv
+    restart: always
+    privileged: true
+    ports:
+      - "9876:9876"
+    volumes:
+      - ./data/namesrv/logs:/home/rocketmq/logs
+    command: sh mqnamesrv
+  broker:
+    image: apache/rocketmq:${VERSION}
+    container_name: rmqbroker
+    restart: always
+    privileged: true
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    volumes:
+      - ./data/broker/logs:/home/rocketmq/logs
+      - ./data/broker/store:/home/rocketmq/store
+      - ./data/broker/conf/broker.conf:/home/rocketmq/rocketmq-${VERSION}/conf/broker.conf
+    command: sh mqbroker -n namesrv:9876 -c ../conf/broker.conf
+    depends_on:
+      - namesrv
+  dashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: dashboard
+    restart: always
+    privileged: true
+    ports:
+      - "8081:8080"
+    environment:
+      - "JAVA_OPTS=-Drocketmq.namesrv.addr=namesrv:9876"
+      - TZ=Asia/Shanghai
+    depends_on:
+      - namesrv
