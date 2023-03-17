@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  redis:
+    image: redis
+    container_name: ihuman-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+    command: redis-server /etc/redis/redis.conf
+    volumes:
+      - ./redis-data/data:/data
+      - ./redis-data/redis.conf:/etc/redis/redis.conf
+      - ./redis-data/log:/home/log
