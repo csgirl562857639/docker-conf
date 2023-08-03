@@ -28,7 +28,7 @@ services:
     environment:
       - canal.adminUser=admin
       - canal.adminPasswd=admin
-      - spring.datasource.address=10.70.103.241:3306
+      - spring.datasource.address=${DB_HOST}
       - spring.datasource.database=canal_manager
       - spring.datasource.username=${DB_USERNAME}
       - spring.datasource.password=${DB_PASSWORD}
